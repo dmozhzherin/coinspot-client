@@ -1,7 +1,9 @@
 package dym.coins.coinspot.service
 
 import dym.coins.coinspot.api.request.OrderHistoryRequest
+import dym.coins.coinspot.api.request.TransfersHistoryRequest
 import dym.coins.coinspot.api.resource.OrderHistoryResponse
+import dym.coins.coinspot.api.resource.TransfersHistoryResponse
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpResponse.BodyHandlers
@@ -10,6 +12,7 @@ import java.util.concurrent.CompletableFuture
 
 private const val COINSPOT_API_V_2 = "https://www.coinspot.com.au/api/v2"
 private const val ORDER_HISTORY = "/ro/my/orders/completed"
+private const val TRANSFER_HISTORY = "/ro/my/sendreceive"
 
 /**
  * @author dym
@@ -23,17 +26,31 @@ class CoinspotPrivateApiClient
 ) : PrivateAPIClient(apiKey, apiSecret) {
 
     private val httpClient: HttpClient = HttpClient.newHttpClient()
+
     fun loadOperationsAsync(
         startDate: String,
         endDate: String,
         limit: Int? = null
     ): CompletableFuture<OrderHistoryResponse> {
 
-        val body = OrderHistoryRequest(null, null, startDate, endDate, limit);
+        val body = OrderHistoryRequest(null, null, startDate, endDate, limit)
         val request = prepareRequest(URI.create(apiUrl + ORDER_HISTORY), body)
 
         return httpClient.sendAsync(request, BodyHandlers.ofInputStream()).thenApply { response ->
             processResponse(response, OrderHistoryResponse::class.java) { it }
+        }
+    }
+
+    fun loadTransfersAsync(
+        startDate: String,
+        endDate: String,
+    ): CompletableFuture<TransfersHistoryResponse> {
+
+        val body = TransfersHistoryRequest(startDate, endDate)
+        val request = prepareRequest(URI.create(apiUrl + TRANSFER_HISTORY), body)
+
+        return httpClient.sendAsync(request, BodyHandlers.ofInputStream()).thenApply { response ->
+            processResponse(response, TransfersHistoryResponse::class.java) { it }
         }
     }
 

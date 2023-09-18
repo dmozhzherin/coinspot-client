@@ -4,19 +4,12 @@ import com.fasterxml.jackson.annotation.JsonInclude
 
 /**
  * @author dym
- * Date: 15.09.2023
+ * Date: 18.09.2023
  */
 @JvmRecord
 @JsonInclude(JsonInclude.Include.NON_NULL)
-data class OrderHistoryRequest (
-    val cointype : String?,
-    val markettype : String?,
-
+data class TransfersHistoryRequest (
     override val startdate: String?,
     override val enddate: String?,
-
-    val limit : Int?,
-
-    override val nonce : Long = System.currentTimeMillis(),
-
-    ) : DateIntervalRequest, HMACRequest
+    override val nonce: Long = System.currentTimeMillis()
+): DateIntervalRequest, HMACRequest
