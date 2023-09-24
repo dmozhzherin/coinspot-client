@@ -1,6 +1,7 @@
 package dym.coins.coinspot.service
 
 import com.fasterxml.jackson.core.JacksonException
+import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.ObjectReader
 import com.fasterxml.jackson.databind.ObjectWriter
 import com.fasterxml.jackson.databind.json.JsonMapper
@@ -51,9 +52,11 @@ abstract class APIClient {
         val objectReader: ObjectReader
 
         init {
-            val jsonMapper = JsonMapper()
+            val jsonMapper = JsonMapper.builder()
+                .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
+                .addModule(JavaTimeModule())
+                .build()
             jsonMapper.registerKotlinModule()
-            jsonMapper.registerModule(JavaTimeModule())
             objectWriter = jsonMapper.writer()
             objectReader = jsonMapper.reader()
         }
