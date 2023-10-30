@@ -25,7 +25,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
-          server-url: https://maven.pkg.github.com/dmozhzherin # URL of the GitHub Packages repository
           settings-path: ${{ github.workspace }} # location for the settings.xml file
 
       - name: Debug

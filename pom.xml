@@ -104,6 +104,7 @@
         <repository>
             <uniqueVersion>false</uniqueVersion>
             <id>github</id>
+            <url>https://maven.pkg.github.com/dmozhzherin/coinspot-client</url>
             <layout>default</layout>
         </repository>
     </distributionManagement>
