@@ -103,7 +103,7 @@
     <distributionManagement>
         <repository>
             <uniqueVersion>false</uniqueVersion>
-            <id>GitHub</id>
+            <id>github</id>
             <url>https://maven.pkg.github.com/dmozhzherin</url>
             <layout>default</layout>
         </repository>
