@@ -3,7 +3,6 @@ package dym.coins.coinspot.api.resource
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.util.StdConverter
-import java.math.BigDecimal
 import java.util.TreeMap
 
 /**
@@ -15,26 +14,18 @@ import java.util.TreeMap
 data class BalancesResponse (
     override val status: String,
     override val message: String?,
-    @JsonDeserialize(converter = CoinspotBakancesArrayToMapConverter::class)
+    @JsonDeserialize(converter = CoinspotBalancesArrayToMapConverter::class)
     @JvmField val balances: Map<String, Balance>
 ) : ResponseMeta {
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    @JvmRecord
-    data class Balance(
-        val balance: BigDecimal,
-        val audbalance: BigDecimal,
-        val rate: BigDecimal,
-    )
 }
 
 /**
  * Well, it's not me - it's the authors of Coinspot API.
  */
-class CoinspotBakancesArrayToMapConverter
-    : StdConverter<Array<Map<String, BalancesResponse.Balance>>, Map<String, BalancesResponse.Balance>>() {
-    override fun convert(value: Array<Map<String, BalancesResponse.Balance>>): Map<String, BalancesResponse.Balance> {
-        return TreeMap<String, BalancesResponse.Balance>().apply {
+class CoinspotBalancesArrayToMapConverter : StdConverter<Array<Map<String, Balance>>, Map<String, Balance>>() {
+    override fun convert(value: Array<Map<String, Balance>>): Map<String, Balance> {
+        return TreeMap<String, Balance>().apply {
             value.forEach { putAll(it) }
         }
     }
