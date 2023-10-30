@@ -25,7 +25,7 @@ data class TransfersHistoryResponse(
         val amount: BigDecimal,
         val coin: String,
         val address: String,
-        val aud: BigDecimal? = BigDecimal.ZERO,
+        val aud: BigDecimal = BigDecimal.ZERO,
     )
 }
 

@@ -5,5 +5,11 @@ package dym.coins.coinspot.api.request
  * Date: 17.09.2023
  */
 interface HMACRequest {
-    val nonce: Long
+    val nonce: Nonce
+
+    companion object {
+        fun noinput() = object : HMACRequest {
+            override val nonce = Nonce()
+        }
+    }
 }

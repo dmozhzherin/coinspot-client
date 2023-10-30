@@ -9,7 +9,7 @@ import kotlin.test.Ignore
  * @author dym
  * Date: 15.09.2023
  */
-class CoinspotPubApiClientTest {
+class CoinspotPubApiClientIntegrationTest {
 
     @Test
     @Ignore

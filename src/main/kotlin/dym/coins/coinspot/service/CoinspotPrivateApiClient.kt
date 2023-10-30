@@ -1,7 +1,9 @@
 package dym.coins.coinspot.service
 
+import dym.coins.coinspot.api.request.HMACRequest
 import dym.coins.coinspot.api.request.OrderHistoryRequest
 import dym.coins.coinspot.api.request.TransfersHistoryRequest
+import dym.coins.coinspot.api.resource.BalancesResponse
 import dym.coins.coinspot.api.resource.OrderHistoryResponse
 import dym.coins.coinspot.api.resource.TransfersHistoryResponse
 import java.net.URI
@@ -13,6 +15,7 @@ import java.util.concurrent.CompletableFuture
 private const val COINSPOT_API_V_2 = "https://www.coinspot.com.au/api/v2"
 private const val ORDER_HISTORY = "/ro/my/orders/completed"
 private const val TRANSFER_HISTORY = "/ro/my/sendreceive"
+private const val BALANCES = "/ro/my/balances"
 
 /**
  * @author dym
@@ -36,9 +39,10 @@ class CoinspotPrivateApiClient
         val body = OrderHistoryRequest(null, null, startDate, endDate, limit)
         val request = prepareRequest(URI.create(apiUrl + ORDER_HISTORY), body)
 
-        return httpClient.sendAsync(request, BodyHandlers.ofInputStream()).thenApply { response ->
-            processResponse(response, OrderHistoryResponse::class.java) { it }
-        }
+        return httpClient.sendAsync(request, BodyHandlers.ofInputStream())
+            .thenApply { response ->
+                processResponse(response, OrderHistoryResponse::class.java) { it }
+            }
     }
 
     fun loadTransfersAsync(
@@ -49,9 +53,19 @@ class CoinspotPrivateApiClient
         val body = TransfersHistoryRequest(startDate, endDate)
         val request = prepareRequest(URI.create(apiUrl + TRANSFER_HISTORY), body)
 
-        return httpClient.sendAsync(request, BodyHandlers.ofInputStream()).thenApply { response ->
-            processResponse(response, TransfersHistoryResponse::class.java) { it }
-        }
+        return httpClient.sendAsync(request, BodyHandlers.ofInputStream())
+            .thenApply { response ->
+                processResponse(response, TransfersHistoryResponse::class.java) { it }
+            }
+    }
+
+    fun loadBalancesAsync(): CompletableFuture<BalancesResponse> {
+        val request = prepareRequest(URI.create(apiUrl + BALANCES), HMACRequest.noinput())
+
+        return httpClient.sendAsync(request, BodyHandlers.ofInputStream())
+            .thenApply { response ->
+                processResponse(response, BalancesResponse::class.java) { it }
+            }
     }
 
 }

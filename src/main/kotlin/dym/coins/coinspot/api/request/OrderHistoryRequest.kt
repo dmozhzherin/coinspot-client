@@ -17,6 +17,6 @@ data class OrderHistoryRequest (
 
     val limit : Int?,
 
-    override val nonce : Long = System.currentTimeMillis(),
+    override val nonce : Nonce = Nonce(),
 
     ) : DateIntervalRequest, HMACRequest

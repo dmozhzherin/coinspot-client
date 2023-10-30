@@ -11,5 +11,5 @@ import com.fasterxml.jackson.annotation.JsonInclude
 data class TransfersHistoryRequest (
     override val startdate: String?,
     override val enddate: String?,
-    override val nonce: Long = System.currentTimeMillis()
+    override val nonce: Nonce = Nonce()
 ): DateIntervalRequest, HMACRequest
