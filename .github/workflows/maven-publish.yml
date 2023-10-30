@@ -26,6 +26,8 @@ jobs:
           settings-path: ${{ github.workspace }} # location for the settings.xml file
           permissions: write
 
+      - name: Debug
+        run: cat $GITHUB_WORKSPACE/settings.xml
 
       - name: Publish to GitHub Packages Apache Maven
         run: mvn -B -s $GITHUB_WORKSPACE/settings.xml --file pom.xml deploy
