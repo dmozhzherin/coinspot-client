@@ -104,7 +104,6 @@
         <repository>
             <uniqueVersion>false</uniqueVersion>
             <id>github</id>
-            <url>https://maven.pkg.github.com/dmozhzherin</url>
             <layout>default</layout>
         </repository>
     </distributionManagement>

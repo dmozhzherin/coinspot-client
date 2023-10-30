@@ -10,6 +10,8 @@ on:
 jobs:
   build:
 
+
+
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -23,8 +25,8 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
+          server-url: https://maven.pkg.github.com/dmozhzherin # URL of the GitHub Packages repository
           settings-path: ${{ github.workspace }} # location for the settings.xml file
-          permissions: write
 
       - name: Debug
         run: cat $GITHUB_WORKSPACE/settings.xml
