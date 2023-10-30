@@ -26,7 +26,7 @@ jobs:
           settings-path: ${{ github.workspace }} # location for the settings.xml file
 
       - name: Publish to GitHub Packages Apache Maven
-        run: mvn -B -s $GITHUB_WORKSPACE/settings.xml -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/dmozhzherin/coinspot-client --file pom.xml deploy
+        run: mvn -B -s $GITHUB_WORKSPACE/settings.xml -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/dmozhzherin/coinspot-client -DuniqueVersion=false --file pom.xml deploy
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
