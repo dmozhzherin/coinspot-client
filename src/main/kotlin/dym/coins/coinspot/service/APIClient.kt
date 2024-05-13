@@ -9,9 +9,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import dym.coins.coinspot.api.resource.ResponseMeta
 import dym.coins.coinspot.exception.CoinspotException
-import java.io.InputStream
-import java.net.HttpURLConnection.HTTP_OK
-import java.net.http.HttpResponse
+import io.ktor.client.call.body
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HttpStatusCode
 
 /**
  * @author dym
@@ -19,28 +19,21 @@ import java.net.http.HttpResponse
  */
 abstract class APIClient {
 
-    private fun <T> readBody(response: HttpResponse<T>): String {
-        return if (response.body() is InputStream) {
-            val body = response.body() as InputStream
-            body.bufferedReader().readText()
-        } else ""
-    }
+    private suspend fun verify(response: HttpResponse) =
+        if (response.status == HttpStatusCode.OK) true
+        else throw CoinspotException("API call failed. Status ${response.status} body: ${response.body<String>()}")
 
-    private fun <T> verify(response: HttpResponse<T>) =
-        if (response.statusCode() == HTTP_OK) true
-        else throw CoinspotException("API call failed. Status ${response.statusCode()} body: ${readBody(response)}")
-
-    protected fun <T, P : ResponseMeta> processResponse(
-        response: HttpResponse<InputStream>,
+    protected suspend fun <T, P : ResponseMeta> processResponse(
+        response: HttpResponse,
         clazz: Class<P>,
         transform: (P) -> T
     ): T {
 
         verify(response)
         try {
-            objectReader.readValue(response.body(), clazz)
+            objectReader.readValue(response.body<ByteArray>(), clazz)
         } catch (e: JacksonException) {
-            throw CoinspotException("API call failed. Status ${response.statusCode()}", e)
+            throw CoinspotException("API call failed. Status ${response.status}", e)
         }.run {
             if (isSuccess()) return transform(this)
             else throw CoinspotException("API call failed: $message")

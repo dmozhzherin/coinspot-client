@@ -7,15 +7,8 @@ import dym.coins.coinspot.api.resource.BalanceResponse
 import dym.coins.coinspot.api.resource.BalancesResponse
 import dym.coins.coinspot.api.resource.OrderHistoryResponse
 import dym.coins.coinspot.api.resource.TransfersHistoryResponse
-import java.net.URI
-import java.util.concurrent.CompletableFuture
+import java.net.URL
 
-
-private const val COINSPOT_API_V_2 = "https://www.coinspot.com.au/api/v2"
-private const val ORDER_HISTORY = "/ro/my/orders/completed"
-private const val TRANSFER_HISTORY = "/ro/my/sendreceive"
-private const val BALANCES = "/ro/my/balances"
-private const val BALANCE = "/ro/my/balance"
 
 /**
  * @author dym
@@ -28,40 +21,40 @@ class CoinspotPrivateApiClient
     private val apiUrl: String = COINSPOT_API_V_2,
 ) : PrivateAPIClient(apiKey, apiSecret) {
 
-    fun loadOperationsAsync(
+    suspend fun loadOperations(
         startDate: String,
         endDate: String,
         limit: Int? = null
-    ): CompletableFuture<OrderHistoryResponse> {
+    ): OrderHistoryResponse {
         val body = OrderHistoryRequest(null, null, startDate, endDate, limit)
-        val request = prepareRequest(URI.create(apiUrl + ORDER_HISTORY), body)
 
-        return callApiAsync(request, OrderHistoryResponse::class.java)
+        return callApi(URL(apiUrl + ORDER_HISTORY), body, OrderHistoryResponse::class.java)
     }
 
-    fun loadTransfersAsync(
+    suspend fun loadTransfers(
         startDate: String,
         endDate: String,
-    ): CompletableFuture<TransfersHistoryResponse> {
+    ): TransfersHistoryResponse {
         val body = TransfersHistoryRequest(startDate, endDate)
-        val request = prepareRequest(URI.create(apiUrl + TRANSFER_HISTORY), body)
-
-        return callApiAsync(request, TransfersHistoryResponse::class.java)
+        return callApi(URL(apiUrl + TRANSFER_HISTORY), body, TransfersHistoryResponse::class.java)
     }
 
     /**
      * Load all balances. API does not return available balances.
-     * To obtain available balances use [loadBalanceAsync]
+     * To obtain available balances use [loadBalance]
      */
-    fun loadBalancesAsync(): CompletableFuture<BalancesResponse> {
-        val request = prepareRequest(URI.create(apiUrl + BALANCES), HMACRequest.noinput())
+    suspend fun loadBalances(): BalancesResponse =
+        callApi(URL(apiUrl + BALANCES), HMACRequest.noinput(), BalancesResponse::class.java)
 
-        return callApiAsync(request, BalancesResponse::class.java)
-    }
 
-    fun loadBalanceAsync(coin: String): CompletableFuture<BalanceResponse> {
-        val request = prepareRequest(URI.create("$apiUrl$BALANCE/$coin?available=yes"), HMACRequest.noinput())
+    suspend fun loadBalance(coin: String): BalanceResponse =
+        callApi(URL("$apiUrl$BALANCE/$coin?available=yes"), HMACRequest.noinput(), BalanceResponse::class.java)
 
-        return callApiAsync(request, BalanceResponse::class.java)
+    companion object {
+        private const val COINSPOT_API_V_2 = "https://www.coinspot.com.au/api/v2"
+        private const val ORDER_HISTORY = "/ro/my/orders/completed"
+        private const val TRANSFER_HISTORY = "/ro/my/sendreceive"
+        private const val BALANCES = "/ro/my/balances"
+        private const val BALANCE = "/ro/my/balance"
     }
 }
