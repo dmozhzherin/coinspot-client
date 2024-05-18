@@ -1,6 +1,7 @@
 package dym.coins.coinspot.api.request
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import dym.coins.coinspot.domain.AssetType
 
 /**
  * @author dym
@@ -9,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 @JvmRecord
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class OrderHistoryRequest (
-    val cointype : String?,
+    val cointype : AssetType?,
     val markettype : String?,
 
     override val startdate: String?,

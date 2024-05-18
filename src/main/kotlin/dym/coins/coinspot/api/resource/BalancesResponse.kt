@@ -9,8 +9,8 @@ import java.util.TreeMap
  * @author dym
  * Date: 29.10.2023
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 @JvmRecord
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class BalancesResponse (
     override val status: String,
     override val message: String?,

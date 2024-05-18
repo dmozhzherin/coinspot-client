@@ -1,13 +1,13 @@
-package dym.coins.coinspot.service
+package dym.coins.coinspot.client
 
 import dym.coins.coinspot.api.resource.RatesResponse
+import dym.coins.coinspot.domain.AssetType
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.math.RoundingMode
-import kotlin.test.Ignore
 
 /**
  * @author dym
@@ -16,10 +16,9 @@ import kotlin.test.Ignore
 class CoinspotPubApiClientIntegrationTest {
 
     @Test
-    @Ignore
-    fun loadPricesAsync() = runBlocking {
+    fun latestRatesAsync() = runBlocking {
         launch {
-            CoinspotPubApiClient().loadPrices().apply {
+            CoinspotPubApiClient().latestRates().apply {
                 assertNotNull(this)
                 assertTrue(isNotEmpty())
 
@@ -31,8 +30,8 @@ class CoinspotPubApiClientIntegrationTest {
     @Test
     fun compareRates() = runBlocking {
         launch {
-            CoinspotPubApiClient().loadPrices().apply {
-                val filtered = mutableMapOf<String, RatesResponse.Rate>()
+            CoinspotPubApiClient().latestRates().apply {
+                val filtered = mutableMapOf<AssetType, RatesResponse.Rate>()
                 entries.forEach { (key, value) ->
                     ((value.ask - value.bid) / value.bid)
                         .times("100".toBigDecimal()).setScale(2, RoundingMode.HALF_UP)

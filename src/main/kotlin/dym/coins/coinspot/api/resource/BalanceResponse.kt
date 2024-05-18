@@ -8,8 +8,8 @@ import com.fasterxml.jackson.databind.util.StdConverter
  * @author dym
  * Date: 30.10.2023
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 @JvmRecord
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class BalanceResponse(
     override val status: String,
     override val message: String?,

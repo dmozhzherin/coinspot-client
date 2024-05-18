@@ -1,4 +1,4 @@
-package dym.coins.coinspot.service
+package dym.coins.coinspot.client
 
 import com.fasterxml.jackson.core.JacksonException
 import com.fasterxml.jackson.databind.MapperFeature
@@ -28,7 +28,6 @@ abstract class APIClient {
         clazz: Class<P>,
         transform: (P) -> T
     ): T {
-
         verify(response)
         try {
             objectReader.readValue(response.body<ByteArray>(), clazz)
@@ -36,7 +35,7 @@ abstract class APIClient {
             throw CoinspotException("API call failed. Status ${response.status}", e)
         }.run {
             if (isSuccess()) return transform(this)
-            else throw CoinspotException("API call failed: $message")
+            else throw CoinspotException(status, "API call failed: $message")
         }
     }
 

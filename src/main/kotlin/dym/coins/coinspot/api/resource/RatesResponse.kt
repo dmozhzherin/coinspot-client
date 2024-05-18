@@ -1,6 +1,8 @@
 package dym.coins.coinspot.api.resource
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import dym.coins.coinspot.domain.AssetType
 import java.math.BigDecimal
 
 /**
@@ -12,7 +14,8 @@ import java.math.BigDecimal
 data class RatesResponse(
     override val status: String,
     override val message: String?,
-    @JvmField val prices: Map<String, Rate>
+    @JsonDeserialize(keyAs = AssetType::class)
+    @JvmField val prices: Map<AssetType, Rate>
 ) : ResponseMeta {
 
     @JsonIgnoreProperties(ignoreUnknown = true)

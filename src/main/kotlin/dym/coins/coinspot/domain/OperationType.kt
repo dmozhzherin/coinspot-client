@@ -1,4 +1,4 @@
-package dym.coins.coinspot.api.resource
+package dym.coins.coinspot.domain
 
 import com.fasterxml.jackson.annotation.JsonValue
 

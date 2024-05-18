@@ -1,4 +1,4 @@
-package dym.coins.coinspot.service
+package dym.coins.coinspot.client
 
 import dym.coins.coinspot.api.request.HMACRequest
 import dym.coins.coinspot.api.resource.ResponseMeta
@@ -49,13 +49,14 @@ abstract class PrivateAPIClient(private val apiKey: String, apiSecret: String) :
         }
     }
 
-    protected suspend fun <T : HMACRequest, R : ResponseMeta> callApi(
+    protected suspend fun <T : HMACRequest, P : ResponseMeta, R> callApi(
         url: URL,
         body: T,
-        clazz: Class<R>,
+        clazz: Class<P>,
+        transform: (P) -> R = { it as R }
     ): R =
         httpClient.post(prepareRequest(url, body)).run {
-            return processResponse(this, clazz) { it }
+            return processResponse(this, clazz, transform)
         }
 
 }
