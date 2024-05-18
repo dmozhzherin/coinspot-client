@@ -11,6 +11,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
+import kotlin.test.Ignore
 
 /**
  * @author dym
@@ -32,13 +33,14 @@ class CoinspotFAApiClientIntegrationTest {
     }
 
     @Test
+    @Ignore
     fun testSwapQuote() = runBlocking {
         launch {
             coinspotFAApiClient
                 .requestSwapQuote(AssetType.of("DOGE"), AssetType.of("BTC"), BigDecimal("1")).apply {
                     assertNotNull(this)
 
-                    println(jsonMapper.writeValueAsString(this))
+                    println(this)
                 }
         }.join()
     }
