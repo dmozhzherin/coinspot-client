@@ -2,6 +2,8 @@ package dym.coins.coinspot.domain
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentMap
 
 /**
  * @author dym
@@ -36,7 +38,8 @@ data class AssetType internal constructor(
         val REV = AssetType("REV", "Revain", "R", false)
         val BCC = AssetType("BCC", "Bitcoin Cash", "BCH", false)
 
-        private val assetTypes: MutableMap<String, AssetType> = mutableMapOf(
+        @JvmStatic
+        private val assetTypes: ConcurrentMap<String, AssetType> = ConcurrentHashMap(mapOf(
             AUD.code to AUD,
 
             SCRT.code to SCRT,
@@ -65,7 +68,7 @@ data class AssetType internal constructor(
 
             BCC.code to BCC,
             BCC.alias!! to BCC
-        )
+        ))
 
         @JvmStatic
         @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
