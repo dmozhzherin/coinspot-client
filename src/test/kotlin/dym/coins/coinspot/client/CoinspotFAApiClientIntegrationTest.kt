@@ -19,6 +19,8 @@ import kotlin.test.Ignore
  */
 class CoinspotFAApiClientIntegrationTest {
 
+    //The test fails if the API key and secret are not set in the environment variables
+    //To run the test one must have an account on the coinspot.com.au
     private val coinspotFAApiClient: CoinspotFAApiClient by lazy {
         CoinspotFAApiClient(System.getenv("FA_KEY"), System.getenv("FA_SECRET"))
     }
