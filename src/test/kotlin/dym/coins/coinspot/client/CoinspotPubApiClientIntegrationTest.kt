@@ -40,9 +40,9 @@ class CoinspotPubApiClientIntegrationTest {
                             println("$key: \t ${value.bid} \t ${value.ask} \t ${value.last} \t $it")
                             filtered[key] = with(value) {
                                 copy(
-                                    bid = bid.setScale(8),
-                                    ask = ask.setScale(8),
-                                    last = last.setScale(8)
+                                    bid = bid.setScale(8, RoundingMode.HALF_EVEN),
+                                    ask = ask.setScale(8, RoundingMode.HALF_EVEN),
+                                    last = last.setScale(8, RoundingMode.HALF_EVEN)
                                 )
                             }
                         }
