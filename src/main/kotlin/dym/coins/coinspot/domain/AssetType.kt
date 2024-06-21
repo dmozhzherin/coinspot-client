@@ -20,7 +20,7 @@ data class AssetType internal constructor(
     @JsonValue val code: String,
     val name: String,
     val alias: String?,
-    val isFiat: Boolean? = false
+    val isFiat: Boolean = false
 ) : Comparable<AssetType> {
 
     override fun compareTo(other: AssetType) = code.compareTo(other.code)
