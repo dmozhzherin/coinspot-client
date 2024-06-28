@@ -5,4 +5,4 @@ package dym.coins.coinspot.api.request
  * Date: 30.10.2023
  */
 @JvmInline
-value class Nonce(val value : Long = System.currentTimeMillis())
+value class Nonce(val value : Long = System.nanoTime())
