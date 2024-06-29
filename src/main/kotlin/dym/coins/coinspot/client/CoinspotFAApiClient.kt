@@ -1,6 +1,7 @@
 package dym.coins.coinspot.client
 
 import dym.coins.coinspot.api.dto.SwapResult
+import dym.coins.coinspot.api.request.SellQuoteRequest
 import dym.coins.coinspot.api.request.SwapNowRequest
 import dym.coins.coinspot.api.request.SwapQuoteRequest
 import dym.coins.coinspot.api.resource.SwapNowResponse
@@ -23,8 +24,13 @@ class CoinspotFAApiClient
 ) : PrivateAPIClient(apiKey, apiSecret) {
 
 
-    suspend fun requestSwapQuote(from: AssetType, to: AssetType, amount: BigDecimal): BigDecimal =
+    suspend fun swapQuote(from: AssetType, to: AssetType, amount: BigDecimal): BigDecimal =
         callApi(URL("$apiUrl$SWAP_NOW_QUOTE"), SwapQuoteRequest(from, to, amount), SwapQuoteResponse::class.java) {
+            it.rate
+        }
+
+    suspend fun sellQuote(from: AssetType, amount: BigDecimal): BigDecimal =
+        callApi(URL("$apiUrl$SELL_NOW_QUOTE"), SellQuoteRequest(from, amount), SwapQuoteResponse::class.java) {
             it.rate
         }
 
@@ -49,6 +55,7 @@ class CoinspotFAApiClient
         private const val COINSPOT_FA_API_V_2 = "https://www.coinspot.com.au/api/v2"
 
         private const val SWAP_NOW_QUOTE = "/quote/swap/now"
+        private const val SELL_NOW_QUOTE = "/quote/sell/now"
         private const val SWAP_NOW = "/my/swap/now"
     }
 }
