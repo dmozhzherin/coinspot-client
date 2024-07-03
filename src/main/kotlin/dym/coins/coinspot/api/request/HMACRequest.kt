@@ -26,6 +26,7 @@ interface HMACRequest {
         @JvmStatic
         val random = SecureRandom()
 
+        @JvmStatic
         fun noinput() = object : HMACRequest {
             override var nonce = -1L
         }
