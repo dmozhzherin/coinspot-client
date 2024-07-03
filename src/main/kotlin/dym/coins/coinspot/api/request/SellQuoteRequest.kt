@@ -8,13 +8,12 @@ import java.math.BigDecimal
  * @author dym
  * Date: 17.05.2024
  */
-@JvmRecord
 data class SellQuoteRequest(
     val cointype: AssetType,
     val amount: BigDecimal,
     val amounttype: AmountType = AmountType.COIN,
 
-    override val nonce : Nonce = Nonce(),
+    override var nonce : Long = -1
 ): HMACRequest {
 
    enum class AmountType(@JsonValue val value: String) {

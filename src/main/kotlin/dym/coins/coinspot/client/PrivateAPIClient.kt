@@ -12,8 +12,10 @@ import io.ktor.client.request.setBody
 import io.ktor.http.HttpMethod
 import java.net.URL
 import java.util.HexFormat
+import java.util.concurrent.locks.ReentrantLock
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
+import kotlin.concurrent.withLock
 
 /**
  * @author dym
@@ -35,7 +37,7 @@ abstract class PrivateAPIClient(private val apiKey: String, apiSecret: String) :
         }
 
     private fun <T : HMACRequest> prepareRequest(url: URL, body: T): HttpRequestBuilder {
-        val message = objectWriter.writeValueAsBytes(body)
+        val message = objectWriter.writeValueAsBytes(body.nonced())
         val sign = HexFormat.of().formatHex(genSign(message))
 
         return HttpRequestBuilder(url).apply {
@@ -54,9 +56,13 @@ abstract class PrivateAPIClient(private val apiKey: String, apiSecret: String) :
         body: T,
         clazz: Class<P>,
         transform: (P) -> R = { it as R }
-    ): R =
-        httpClient.post(prepareRequest(url, body)).run {
+    ): R = lock.withLock { prepareRequest(url, body) }
+        .let { httpClient.post(it) }
+        .run {
             return processResponse(this, clazz, transform)
         }
 
+    companion object {
+        val lock = ReentrantLock()
+    }
 }

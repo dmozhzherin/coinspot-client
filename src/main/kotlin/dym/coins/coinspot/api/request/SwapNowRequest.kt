@@ -8,7 +8,6 @@ import java.math.BigDecimal
  * @author dym
  * Date: 18.05.2024
  */
-@JvmRecord
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class SwapNowRequest(
     val cointypesell: AssetType,
@@ -18,5 +17,5 @@ data class SwapNowRequest(
     val rate: BigDecimal?,
     val treshold: BigDecimal?,
 
-    override val nonce : Nonce = Nonce()
+    override var nonce: Long = -1
 ): HMACRequest

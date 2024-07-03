@@ -2,6 +2,7 @@ package dym.coins.coinspot.api.request
 
 import org.junit.jupiter.api.Assertions.assertTrue
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 /**
  * @author dym
@@ -14,9 +15,8 @@ class HmacTest {
         val request1 = HMACRequest.noinput()
         val request2 = HMACRequest.noinput()
 
-        println(request1.nonce)
-        println(request2.nonce)
+        assertEquals(request2.nonce, request1.nonce)
 
-        assertTrue(request1.nonce.value < request2.nonce.value)
+        assertTrue(request1.nonced().nonce < request2.nonced().nonce)
     }
 }

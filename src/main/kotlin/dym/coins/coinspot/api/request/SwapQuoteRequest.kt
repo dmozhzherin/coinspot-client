@@ -7,11 +7,10 @@ import java.math.BigDecimal
  * @author dym
  * Date: 17.05.2024
  */
-@JvmRecord
 data class SwapQuoteRequest(
     val cointypesell: AssetType,
     val cointypebuy: AssetType,
     val amount: BigDecimal,
 
-    override val nonce : Nonce = Nonce(),
+    override var nonce : Long = -1
 ): HMACRequest
