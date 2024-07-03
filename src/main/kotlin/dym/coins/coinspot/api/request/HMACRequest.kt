@@ -10,6 +10,9 @@ import java.util.concurrent.atomic.LongAdder
 interface HMACRequest {
     var nonce: Long
 
+    /**
+     * Generate and set nonce
+     */
     fun nonced(): HMACRequest = apply { nonce = nonce() }
 
     private fun nonce() = counter.run {
