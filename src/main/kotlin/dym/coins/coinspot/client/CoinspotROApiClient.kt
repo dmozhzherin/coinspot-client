@@ -12,6 +12,7 @@ import dym.coins.coinspot.api.resource.OrderHistoryResponse
 import dym.coins.coinspot.api.resource.TransfersHistoryResponse
 import dym.coins.coinspot.domain.AssetType
 import java.net.URL
+import java.time.LocalDate
 
 
 /**
@@ -27,23 +28,23 @@ class CoinspotROApiClient
 ) : PrivateAPIClient(apiKey, apiSecret) {
 
     suspend fun loadOperations(
-        startDate: String,
-        endDate: String,
+        startDate: LocalDate,
+        endDate: LocalDate,
         limit: Int? = null
     ): OrderHistory = callApi(
         URL(apiUrl + ORDER_HISTORY),
-        OrderHistoryRequest(null, null, startDate, endDate, limit),
+        OrderHistoryRequest(null, null, startDate.toString(), endDate.toString(), limit),
         OrderHistoryResponse::class.java
     ) {
         OrderHistory(it.buyorders, it.sellorders)
     }
 
     suspend fun loadTransfers(
-        startDate: String,
-        endDate: String,
+        startDate: LocalDate,
+        endDate: LocalDate
     ): TransfersHistory = callApi(
         URL(apiUrl + TRANSFER_HISTORY),
-        TransfersHistoryRequest(startDate, endDate),
+        TransfersHistoryRequest(startDate.toString(), endDate.toString()),
         TransfersHistoryResponse::class.java
     ) {
         TransfersHistory(it.sendtransactions, it.receivetransactions)

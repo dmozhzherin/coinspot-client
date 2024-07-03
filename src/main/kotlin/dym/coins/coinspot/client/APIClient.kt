@@ -21,7 +21,7 @@ abstract class APIClient {
 
     private suspend fun verify(response: HttpResponse) =
         if (response.status == HttpStatusCode.OK) true
-        else throw CoinspotException("API call failed. Status ${response.status} body: ${response.body<String>()}")
+        else throw CoinspotException("API call failed. Status ${response.status}, Body: ${response.body<String>()}")
 
     protected suspend fun <T, P : ResponseMeta> processResponse(
         response: HttpResponse,

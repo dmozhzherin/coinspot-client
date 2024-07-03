@@ -2,7 +2,6 @@ package dym.coins.coinspot.client
 
 import dym.coins.coinspot.api.resource.RatesResponse
 import dym.coins.coinspot.domain.AssetType
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -16,20 +15,20 @@ import java.math.RoundingMode
 class CoinspotPubApiClientIntegrationTest {
 
     @Test
-    fun latestRatesAsync() = runBlocking {
-        launch {
+    fun latestRatesAsync() {
+        runBlocking {
             CoinspotPubApiClient().latestRates().apply {
                 assertNotNull(this)
                 assertTrue(isNotEmpty())
 
                 println(this)
             }
-        }.join()
+        }
     }
 
     @Test
-    fun compareRates() = runBlocking {
-        launch {
+    fun compareRates() {
+        runBlocking {
             CoinspotPubApiClient().latestRates().apply {
                 val filtered = mutableMapOf<AssetType, RatesResponse.Rate>()
                 entries.forEach { (key, value) ->
@@ -59,6 +58,6 @@ class CoinspotPubApiClientIntegrationTest {
                     println()
                 }
             }
-        }.join()
+        }
     }
 }

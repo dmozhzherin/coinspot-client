@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import dym.coins.coinspot.domain.AssetType
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
@@ -36,27 +35,27 @@ class CoinspotFAApiClientIntegrationTest {
 
     @Test
     @Ignore
-    fun testSwapQuote() = runBlocking {
-        launch {
+    fun testSwapQuote() {
+        runBlocking {
             coinspotFAApiClient
                 .swapQuote(AssetType.of("DOGE"), AssetType.of("BTC"), BigDecimal("1")).apply {
                     assertNotNull(this)
 
                     println(this)
                 }
-        }.join()
+        }
     }
 
     @Test
     @Ignore
-    fun testSellQuote() = runBlocking {
-        launch {
+    fun testSellQuote() {
+        runBlocking {
             coinspotFAApiClient
                 .sellQuote(AssetType.of("DOGE"), BigDecimal("100")).apply {
                     assertNotNull(this)
 
                     println(this)
                 }
-        }.join()
+        }
     }
 }
