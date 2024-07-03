@@ -7,8 +7,9 @@ import java.util.concurrent.atomic.LongAdder
  * @author dym
  * Date: 17.09.2023
  */
-interface HMACRequest {
-    var nonce: Long
+abstract class HMACRequest {
+    var nonce: Long = -1
+        private set
 
     /**
      * Generate and set nonce
@@ -24,15 +25,13 @@ interface HMACRequest {
         private const val RANDOM_SHIFT = 10L
 
         @JvmStatic
-        val counter = LongAdder().apply { add(System.currentTimeMillis()) }
+        private val counter = LongAdder().apply { add(System.currentTimeMillis()) }
 
         @JvmStatic
-        val random = SecureRandom()
+        private val random = SecureRandom()
 
         @JvmStatic
-        fun noinput() = object : HMACRequest {
-            override var nonce = -1L
-        }
+        fun noinput() = object : HMACRequest() {}
     }
 
 }

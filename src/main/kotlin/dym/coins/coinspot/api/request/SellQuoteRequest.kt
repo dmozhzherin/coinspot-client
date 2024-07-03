@@ -12,9 +12,7 @@ data class SellQuoteRequest(
     val cointype: AssetType,
     val amount: BigDecimal,
     val amounttype: AmountType = AmountType.COIN,
-
-    override var nonce : Long = -1
-): HMACRequest {
+): HMACRequest() {
 
    enum class AmountType(@JsonValue val value: String) {
         AUD("aud"),

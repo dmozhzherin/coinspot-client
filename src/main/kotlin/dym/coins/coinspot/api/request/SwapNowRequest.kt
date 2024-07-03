@@ -15,7 +15,5 @@ data class SwapNowRequest(
     val amount: BigDecimal,
 
     val rate: BigDecimal?,
-    val treshold: BigDecimal?,
-
-    override var nonce: Long = -1
-): HMACRequest
+    val treshold: BigDecimal?
+): HMACRequest()

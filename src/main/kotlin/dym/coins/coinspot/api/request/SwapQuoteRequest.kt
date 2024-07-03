@@ -10,7 +10,5 @@ import java.math.BigDecimal
 data class SwapQuoteRequest(
     val cointypesell: AssetType,
     val cointypebuy: AssetType,
-    val amount: BigDecimal,
-
-    override var nonce : Long = -1
-): HMACRequest
+    val amount: BigDecimal
+): HMACRequest()

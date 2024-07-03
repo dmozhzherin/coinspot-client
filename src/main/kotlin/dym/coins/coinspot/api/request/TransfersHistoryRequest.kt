@@ -9,6 +9,5 @@ import com.fasterxml.jackson.annotation.JsonInclude
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class TransfersHistoryRequest (
     override val startdate: String?,
-    override val enddate: String?,
-    override var nonce: Long = -1
-): DateIntervalRequest, HMACRequest
+    override val enddate: String?
+): DateIntervalRequest, HMACRequest()

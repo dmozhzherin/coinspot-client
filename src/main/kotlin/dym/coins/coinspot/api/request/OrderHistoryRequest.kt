@@ -15,8 +15,5 @@ data class OrderHistoryRequest(
     override val startdate: String?,
     override val enddate: String?,
 
-    val limit: Int?,
-
-    override var nonce: Long = -1
-
-) : DateIntervalRequest, HMACRequest
+    val limit: Int?
+) : DateIntervalRequest, HMACRequest()

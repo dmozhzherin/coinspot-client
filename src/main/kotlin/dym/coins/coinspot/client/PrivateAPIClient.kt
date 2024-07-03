@@ -69,7 +69,7 @@ abstract class PrivateAPIClient(private val apiKey: String, apiSecret: String) :
     }
 
     //The mutex is static and that means all customers are synchronised, which is excessive. I'll think about it later.
-    companion object {
+    private companion object {
         @JvmStatic
         val lock = Mutex()
     }
