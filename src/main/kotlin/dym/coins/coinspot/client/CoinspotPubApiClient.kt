@@ -14,6 +14,12 @@ import java.net.URL
 class CoinspotPubApiClient @JvmOverloads constructor(private val apiUrl: String = COINSPOT_PUBAPI_V_2) : APIClient() {
     private val httpClient: HttpClient = HttpClient(CIO)
 
+    /**
+     * Fetches the latest rates from the Coinspot API.
+     * @return a map of asset types and their respective rates.
+     * May return a {@link RatesResponse.Rate#FAULT} in the map if the rate is not parsable.
+     * @throws {@link dym.coins.coinspot.exception.CoinspotException} if the API returns an error.
+     */
     suspend fun latestRates(): Map<AssetType, RatesResponse.Rate> =
         httpClient.get(URL(apiUrl + LATEST_RATES)).run {
             processResponse(this, RatesResponse::class.java) { it.prices }
