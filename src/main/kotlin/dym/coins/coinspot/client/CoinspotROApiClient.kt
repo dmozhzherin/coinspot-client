@@ -54,7 +54,7 @@ class CoinspotROApiClient
      * Load all balances API does not return available balances (some coins might be blocked for orders).
      * To obtain available balances use [loadBalance]
      */
-    suspend fun loadBalances(): Map<String, Balance> =
+    suspend fun loadBalances(): Map<AssetType, Balance> =
         callApi(URL(apiUrl + BALANCES), HMACRequest.noinput(), BalancesResponse::class.java) {
             it.balances
         }

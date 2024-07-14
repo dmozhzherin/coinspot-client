@@ -3,6 +3,7 @@ package dym.coins.coinspot.api.resource
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.util.StdConverter
+import dym.coins.coinspot.domain.AssetType
 import java.util.TreeMap
 
 /**
@@ -15,7 +16,7 @@ data class BalancesResponse (
     override val status: String,
     override val message: String?,
     @JsonDeserialize(converter = CoinspotBalancesArrayToMapConverter::class)
-    @JvmField val balances: Map<String, Balance>
+    @JvmField val balances: Map<AssetType, Balance>
 ) : ResponseMeta {
 
 }
@@ -23,9 +24,9 @@ data class BalancesResponse (
 /**
  * Well, it's not me - it's the authors of Coinspot API.
  */
-class CoinspotBalancesArrayToMapConverter : StdConverter<Array<Map<String, Balance>>, Map<String, Balance>>() {
-    override fun convert(value: Array<Map<String, Balance>>): Map<String, Balance> {
-        return TreeMap<String, Balance>().apply {
+class CoinspotBalancesArrayToMapConverter : StdConverter<Array<Map<AssetType, Balance>>, Map<AssetType, Balance>>() {
+    override fun convert(value: Array<Map<AssetType, Balance>>): Map<AssetType, Balance> {
+        return TreeMap<AssetType, Balance>().apply {
             value.forEach { putAll(it) }
         }
     }

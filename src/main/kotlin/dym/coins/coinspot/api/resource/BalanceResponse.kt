@@ -3,6 +3,7 @@ package dym.coins.coinspot.api.resource
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.util.StdConverter
+import dym.coins.coinspot.domain.AssetType
 
 /**
  * @author dym
@@ -17,8 +18,8 @@ data class BalanceResponse(
     val balance: Balance
 ) : ResponseMeta
 
-class CoinspotBalanceSingletonMapUnwrapper : StdConverter<Map<String, Balance>, Balance>() {
-    override fun convert(value: Map<String, Balance>): Balance {
+class CoinspotBalanceSingletonMapUnwrapper : StdConverter<Map<AssetType, Balance>, Balance>() {
+    override fun convert(value: Map<AssetType, Balance>): Balance {
         return value.values.first()
     }
 }
