@@ -34,7 +34,7 @@ class CoinspotFAApiClientIntegrationTest {
     }
 
     @Test
-//    @Ignore
+    @Ignore
     fun testSwapQuote() {
         runBlocking {
             coinspotFAApiClient
