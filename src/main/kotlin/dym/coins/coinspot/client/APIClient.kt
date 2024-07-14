@@ -11,6 +11,7 @@ import dym.coins.coinspot.api.resource.ResponseMeta
 import dym.coins.coinspot.exception.CoinspotException
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.request
 import io.ktor.http.HttpStatusCode
 
 /**
@@ -21,7 +22,7 @@ abstract class APIClient {
 
     private suspend fun verify(response: HttpResponse) =
         if (response.status == HttpStatusCode.OK) true
-        else throw CoinspotException("API call failed. Status ${response.status}, Body: ${response.body<String>()}")
+        else throw CoinspotException("API call failed: ${response.request.url}, Status ${response.status}, Body: ${response.body<String>()}")
 
     protected suspend fun <T, P : ResponseMeta> processResponse(
         response: HttpResponse,

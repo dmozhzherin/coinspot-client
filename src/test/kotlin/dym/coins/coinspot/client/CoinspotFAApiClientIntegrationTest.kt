@@ -38,7 +38,7 @@ class CoinspotFAApiClientIntegrationTest {
     fun testSwapQuote() {
         runBlocking {
             coinspotFAApiClient
-                .swapQuote(AssetType.of("DOGE"), AssetType.of("BTC"), BigDecimal("1")).apply {
+                .swapQuote(AssetType.of("DOGE"), AssetType.of("BTC"), BigDecimal("100")).apply {
                     assertNotNull(this)
 
                     println(this)

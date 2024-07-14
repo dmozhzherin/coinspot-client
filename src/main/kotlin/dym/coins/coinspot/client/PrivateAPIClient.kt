@@ -2,16 +2,20 @@ package dym.coins.coinspot.client
 
 import dym.coins.coinspot.api.request.HMACRequest
 import dym.coins.coinspot.api.resource.ResponseMeta
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.request.*
-import io.ktor.http.*
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.headers
+import io.ktor.client.request.invoke
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.HttpMethod
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.net.URL
-import java.util.*
+import java.util.HexFormat
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
@@ -65,7 +69,7 @@ abstract class PrivateAPIClient(private val apiKey: String, apiSecret: String) :
         val request = prepareRequest(url, body)
         coroutineScope { async { httpClient.post(request) } }
     }.await().run {
-        return processResponse(this, clazz, transform)
+        processResponse(this, clazz, transform)
     }
 
     //The mutex is static and that means all customers are synchronised, which is excessive. I'll think about it later.

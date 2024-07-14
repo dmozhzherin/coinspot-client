@@ -17,8 +17,17 @@ import java.util.concurrent.ConcurrentMap
  */
 @JvmRecord
 data class AssetType internal constructor(
+    /**
+     * Asset code used in the API (e.g. "SCRT" for Secret, "XLM" for Stellar, "AUD" for Australian Dollar, etc.
+     */
     @JsonValue val code: String,
+    /**
+     * Asset name (e.g "Secret", "Stellar", "Australian Dollar", etc.)
+     */
     val name: String,
+    /**
+     * Alias used in the API for the same asset (e.g. "ENG" for Secret, "STR" for Stellar, etc.)
+     */
     val alias: String?,
     val isFiat: Boolean = false
 ) : Comparable<AssetType> {

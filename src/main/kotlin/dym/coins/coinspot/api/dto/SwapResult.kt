@@ -11,7 +11,16 @@ import java.math.BigDecimal
 data class SwapResult(
     val from: AssetType,
     val to: AssetType,
+    /**
+     * Amount of the asset that was swapped
+     */
     val amount: BigDecimal,
+    /**
+     * Rate at which the swap was made
+     */
     val rate: BigDecimal,
+    /**
+     * Total amount of the asset that was received
+     */
     val total: BigDecimal
 )
