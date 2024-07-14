@@ -8,9 +8,9 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import dym.coins.coinspot.domain.AssetType
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import kotlin.test.Ignore
+import kotlin.test.Test
 
 /**
  * @author dym
