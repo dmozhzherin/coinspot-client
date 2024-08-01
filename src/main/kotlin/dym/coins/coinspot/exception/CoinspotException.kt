@@ -8,7 +8,7 @@ class CoinspotException (
     val error: String?,
     message: String?,
     cause: Throwable? = null
-) : Throwable(message, cause) {
+) : Exception(message, cause) {
     constructor(message: String) : this(null, message)
     constructor(message: String, cause: Throwable) : this(null, message, cause)
 }
