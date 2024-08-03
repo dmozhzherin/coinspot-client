@@ -1,10 +1,14 @@
 package dym.coins.coinspot.client
 
 import com.fasterxml.jackson.core.JacksonException
+import com.fasterxml.jackson.core.JsonGenerator
+import com.fasterxml.jackson.databind.JsonSerializer
 import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.ObjectReader
 import com.fasterxml.jackson.databind.ObjectWriter
+import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.json.JsonMapper
+import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import dym.coins.coinspot.api.resource.ResponseMeta
@@ -13,6 +17,7 @@ import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.request
 import io.ktor.http.HttpStatusCode
+import java.math.BigDecimal
 
 /**
  * @author dym
@@ -49,7 +54,17 @@ abstract class APIClient {
                 .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
                 .addModule(JavaTimeModule())
                 .build()
+
             jsonMapper.registerKotlinModule()
+
+            SimpleModule().apply {
+                addSerializer(BigDecimal::class.java, object : JsonSerializer<BigDecimal?>() {
+                    override fun serialize(value: BigDecimal?, gen: JsonGenerator?, serializers: SerializerProvider?) {
+                        value?.let { gen?.writeNumber(it.stripTrailingZeros().toPlainString()) }
+                    }
+                })
+            }.let { jsonMapper.registerModule(it) }
+
             objectWriter = jsonMapper.writer()
             objectReader = jsonMapper.reader()
         }
