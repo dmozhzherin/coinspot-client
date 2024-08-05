@@ -2,6 +2,7 @@ package dym.coins.coinspot.client
 
 import dym.coins.coinspot.api.request.HMACRequest
 import dym.coins.coinspot.api.resource.ResponseMeta
+import dym.coins.coinspot.exception.CoinspotException
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.HttpRequestBuilder
@@ -69,7 +70,11 @@ abstract class PrivateAPIClient(private val apiKey: String, apiSecret: String) :
         val request = prepareRequest(url, body)
         coroutineScope { async { httpClient.post(request) } }
     }.await().run {
-        processResponse(this, clazz, transform)
+        try {
+            processResponse(this, clazz, transform)
+        } catch (e: CoinspotException) {
+            throw CoinspotException("API call failed. Request: ${objectWriter.writeValueAsBytes(body)}", e)
+        }
     }
 
     //The mutex is static and that means all customers are synchronised, which is excessive. I'll think about it later.

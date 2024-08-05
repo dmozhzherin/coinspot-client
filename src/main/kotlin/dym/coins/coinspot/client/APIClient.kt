@@ -18,6 +18,7 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.request
 import io.ktor.http.HttpStatusCode
 import java.math.BigDecimal
+import java.math.RoundingMode
 
 /**
  * @author dym
@@ -27,7 +28,7 @@ abstract class APIClient {
 
     private suspend fun verify(response: HttpResponse) =
         if (response.status == HttpStatusCode.OK) true
-        else throw CoinspotException("API call failed: ${response.request.url}, Status ${response.status}, Body: ${response.body<String>()}")
+        else throw CoinspotException("API call failed: ${response.request.url}, Status ${response.status}, Body: ${response.body<String>()}, Request: ${response.request.content}")
 
     protected suspend fun <T, P : ResponseMeta> processResponse(
         response: HttpResponse,
@@ -46,6 +47,8 @@ abstract class APIClient {
     }
 
     protected companion object {
+        private const val API_PRECISION = 8
+
         val objectWriter: ObjectWriter
         val objectReader: ObjectReader
 
@@ -60,7 +63,10 @@ abstract class APIClient {
             SimpleModule().apply {
                 addSerializer(BigDecimal::class.java, object : JsonSerializer<BigDecimal?>() {
                     override fun serialize(value: BigDecimal?, gen: JsonGenerator?, serializers: SerializerProvider?) {
-                        value?.let { gen?.writeNumber(it.stripTrailingZeros().toPlainString()) }
+                        value?.setScale(API_PRECISION, RoundingMode.HALF_EVEN)
+                            ?.stripTrailingZeros()
+                            ?.toPlainString()
+                            ?.let { gen?.writeNumber(it) }
                     }
                 })
             }.let { jsonMapper.registerModule(it) }
