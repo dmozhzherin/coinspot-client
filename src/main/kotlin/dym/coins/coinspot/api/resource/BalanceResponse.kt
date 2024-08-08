@@ -12,11 +12,9 @@ import dym.coins.coinspot.domain.AssetType
 @JvmRecord
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class BalanceResponse(
-    override val status: String,
-    override val message: String?,
     @JsonDeserialize(converter = CoinspotBalanceSingletonMapUnwrapper::class)
     val balance: Balance
-) : ResponseMeta
+)
 
 class CoinspotBalanceSingletonMapUnwrapper : StdConverter<Map<AssetType, Balance>, Balance>() {
     override fun convert(value: Map<AssetType, Balance>): Balance {

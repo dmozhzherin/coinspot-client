@@ -16,14 +16,11 @@ import java.math.BigDecimal
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JvmRecord
 data class RatesResponse(
-    override val status: String,
-    override val message: String?,
     @JsonDeserialize(keyAs = AssetType::class)
     @JvmField val prices: Map<AssetType, Rate>
-) : ResponseMeta {
+) {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-
     @JvmRecord
     @JsonDeserialize(using = RateDeserializer::class)
     data class Rate(val bid: BigDecimal, val ask: BigDecimal, val last: BigDecimal) {
@@ -40,8 +37,8 @@ data class RatesResponse(
      * the whole list of rates.
      */
     class RateDeserializer : StdDeserializer<Rate>(Rate::class.java) {
-        override fun deserialize(p0: JsonParser?, p1: DeserializationContext?): Rate =
-            p0?.codec?.readTree<JsonNode>(p0)?.runCatching {
+        override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Rate =
+            p.codec.readTree<JsonNode>(p)?.runCatching {
                 Rate(
                     bid = get("bid").asText().toBigDecimal(),
                     ask = get("ask").asText().toBigDecimal(),

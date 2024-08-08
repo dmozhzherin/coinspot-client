@@ -12,7 +12,7 @@
     <name>Coinspot client</name>
 
     <properties>
-        <revision>0.5.2</revision>
+        <revision>0.6.0</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.code.style>official</kotlin.code.style>
         <kotlin.compiler.jvmTarget>17</kotlin.compiler.jvmTarget>
@@ -144,6 +144,11 @@
             <artifactId>junit-jupiter</artifactId>
             <version>5.10.2</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.ktor</groupId>
+            <artifactId>ktor-client-mock-jvm</artifactId>
         </dependency>
 
     </dependencies>

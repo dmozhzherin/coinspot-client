@@ -4,8 +4,8 @@ package dym.coins.coinspot.exception
  * @author dym
  * Date: 15.09.2023
  */
-class CoinspotException (
-    val error: String?,
+open class CoinspotException (
+    val status: String?,
     message: String?,
     cause: Throwable? = null
 ) : Exception(message, cause) {

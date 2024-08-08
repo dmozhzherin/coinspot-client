@@ -1,10 +1,10 @@
 package dym.coins.coinspot.client
 
+import dym.coins.coinspot.api.resource.RateResponse
 import dym.coins.coinspot.api.resource.RatesResponse
 import dym.coins.coinspot.domain.AssetType
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.get
+import java.math.BigDecimal
 import java.net.URL
 
 /**
@@ -12,7 +12,6 @@ import java.net.URL
  * Date: 12.02.2023
  */
 class CoinspotPubApiClient @JvmOverloads constructor(private val apiUrl: String = COINSPOT_PUBAPI_V_2) : APIClient() {
-    private val httpClient: HttpClient = HttpClient(CIO)
 
     /**
      * Fetches the latest rates from the Coinspot API.
@@ -25,8 +24,16 @@ class CoinspotPubApiClient @JvmOverloads constructor(private val apiUrl: String 
             processResponse(this, RatesResponse::class.java) { it.prices }
         }
 
+    suspend fun latestBuyPrice(assetType: AssetType): BigDecimal =
+        httpClient.get(apiUrl + LATEST_BUY + assetType.code).run {
+            processResponse(this, RateResponse::class.java) { it.rate }
+        }
+
+
     companion object {
         private const val COINSPOT_PUBAPI_V_2 = "https://www.coinspot.com.au/pubapi/v2"
+
         private const val LATEST_RATES = "/latest"
+        private const val LATEST_BUY = "/buyprice/"
     }
 }

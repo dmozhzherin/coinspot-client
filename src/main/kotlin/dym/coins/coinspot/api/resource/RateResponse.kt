@@ -5,10 +5,11 @@ import java.math.BigDecimal
 
 /**
  * @author dym
- * Date: 17.05.2024
+ * Date: 06.08.2024
  */
-@JvmRecord
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class SwapQuoteResponse(
-    val rate: BigDecimal
+@JvmRecord
+data class RateResponse(
+    val rate: BigDecimal,
+    val market:String
 )

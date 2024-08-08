@@ -11,9 +11,11 @@ import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import dym.coins.coinspot.api.resource.ResponseMeta
+import dym.coins.coinspot.exception.CoinspotApiException
 import dym.coins.coinspot.exception.CoinspotException
+import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.engine.cio.CIO
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.request
 import io.ktor.http.HttpStatusCode
@@ -24,25 +26,38 @@ import java.math.RoundingMode
  * @author dym
  * Date: 15.09.2023
  */
-abstract class APIClient {
+abstract class APIClient(protected val httpClient: HttpClient = HttpClient(CIO)) : AutoCloseable {
+
+    override fun close() {
+        httpClient.close()
+    }
 
     private suspend fun verify(response: HttpResponse) =
         if (response.status == HttpStatusCode.OK) true
-        else throw CoinspotException("API call failed: ${response.request.url}, Status ${response.status}, Body: ${response.body<String>()}, Request: ${response.request.content}")
+        else throw CoinspotException("API call failed: ${response.request.url}, Status ${response.status}, Body: ${response.body<String>()}")
 
-    protected suspend fun <T, P : ResponseMeta> processResponse(
+    protected suspend fun <T, P> processResponse(
         response: HttpResponse,
         clazz: Class<P>,
         transform: (P) -> T
     ): T {
         verify(response)
         try {
-            objectReader.readValue(response.body<ByteArray>(), clazz)
+            objectReader.readTree(response.body<ByteArray>())
         } catch (e: JacksonException) {
             throw CoinspotException("API call failed. Status ${response.status}", e)
         }.run {
-            if (isSuccess()) return transform(this)
-            else throw CoinspotException(status, "API call failed: $message")
+            get("status").asText().let { status ->
+                if ("ok".equals(status, ignoreCase = true)) {
+                    try {
+                        return transform(objectReader.readValue(this, clazz))
+                    } catch (e: JacksonException) {
+                        throw CoinspotException("API call failed. Status ${response.status}", e)
+                    }
+                } else {
+                    throw CoinspotApiException(status, get("message").asText())
+                }
+            }
         }
     }
 

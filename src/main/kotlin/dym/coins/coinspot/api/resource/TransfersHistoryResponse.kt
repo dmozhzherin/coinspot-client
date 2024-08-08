@@ -10,13 +10,7 @@ import dym.coins.coinspot.api.dto.TransferOperation
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JvmRecord
 data class TransfersHistoryResponse(
-    override val status: String,
-    override val message: String?,
-
     @JvmField val sendtransactions : List<TransferOperation>,
     @JvmField val receivetransactions : List<TransferOperation>
-
-) : ResponseMeta {
-}
-
+)
 

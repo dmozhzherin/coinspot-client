@@ -10,10 +10,6 @@ import dym.coins.coinspot.api.dto.TradeOperation
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JvmRecord
 data class OrderHistoryResponse(
-    override val status: String,
-    override val message: String?,
     @JvmField val buyorders: List<TradeOperation>,
     @JvmField val sellorders: List<TradeOperation>
-) : ResponseMeta {
-
-}
+)

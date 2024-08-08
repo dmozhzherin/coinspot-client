@@ -13,13 +13,9 @@ import java.util.TreeMap
 @JvmRecord
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class BalancesResponse (
-    override val status: String,
-    override val message: String?,
     @JsonDeserialize(converter = CoinspotBalancesArrayToMapConverter::class)
-    @JvmField val balances: Map<AssetType, Balance>
-) : ResponseMeta {
-
-}
+    val balances: Map<AssetType, Balance>
+)
 
 /**
  * Well, it's not me - it's the authors of Coinspot API.
