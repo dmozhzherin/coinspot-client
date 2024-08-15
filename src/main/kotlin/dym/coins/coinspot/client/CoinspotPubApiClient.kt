@@ -24,8 +24,13 @@ class CoinspotPubApiClient @JvmOverloads constructor(private val apiUrl: String 
             processResponse(this, RatesResponse::class.java) { it.prices }
         }
 
-    suspend fun latestBuyPrice(assetType: AssetType): BigDecimal =
+    suspend fun buyPrice(assetType: AssetType): BigDecimal =
         httpClient.get(apiUrl + LATEST_BUY + assetType.code).run {
+            processResponse(this, RateResponse::class.java) { it.rate }
+        }
+
+    suspend fun sellPrice(assetType: AssetType): BigDecimal =
+        httpClient.get(apiUrl + LATEST_SELL + assetType.code).run {
             processResponse(this, RateResponse::class.java) { it.rate }
         }
 
@@ -35,5 +40,6 @@ class CoinspotPubApiClient @JvmOverloads constructor(private val apiUrl: String 
 
         private const val LATEST_RATES = "/latest"
         private const val LATEST_BUY = "/buyprice/"
+        private const val LATEST_SELL = "/sellprice/"
     }
 }

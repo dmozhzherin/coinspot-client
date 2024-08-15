@@ -47,8 +47,8 @@ abstract class APIClient(protected val httpClient: HttpClient = HttpClient(CIO))
         } catch (e: JacksonException) {
             throw CoinspotException("API call failed. Status ${response.status}", e)
         }.run {
-            get("status").asText().let { status ->
-                if ("ok".equals(status, ignoreCase = true)) {
+            get(FIELD_STATUS).asText().let { status ->
+                if (OK.equals(status, ignoreCase = true)) {
                     try {
                         return transform(objectReader.readValue(this, clazz))
                     } catch (e: JacksonException) {
@@ -62,6 +62,8 @@ abstract class APIClient(protected val httpClient: HttpClient = HttpClient(CIO))
     }
 
     protected companion object {
+        private const val FIELD_STATUS = "status"
+        private const val OK = "ok"
         private const val API_PRECISION = 8
 
         val objectWriter: ObjectWriter
@@ -76,18 +78,20 @@ abstract class APIClient(protected val httpClient: HttpClient = HttpClient(CIO))
             jsonMapper.registerKotlinModule()
 
             SimpleModule().apply {
-                addSerializer(BigDecimal::class.java, object : JsonSerializer<BigDecimal?>() {
-                    override fun serialize(value: BigDecimal?, gen: JsonGenerator?, serializers: SerializerProvider?) {
-                        value?.setScale(API_PRECISION, RoundingMode.HALF_EVEN)
-                            ?.stripTrailingZeros()
-                            ?.toPlainString()
-                            ?.let { gen?.writeNumber(it) }
-                    }
-                })
+                addSerializer(BigDecimal::class.java,BigDecimalSerializer )
             }.let { jsonMapper.registerModule(it) }
 
             objectWriter = jsonMapper.writer()
             objectReader = jsonMapper.reader()
+        }
+    }
+
+    protected object BigDecimalSerializer : JsonSerializer<BigDecimal?>() {
+        override fun serialize(value: BigDecimal?, gen: JsonGenerator?, serializers: SerializerProvider?) {
+            value?.setScale(API_PRECISION, RoundingMode.HALF_EVEN)
+                ?.stripTrailingZeros()
+                ?.toPlainString()
+                ?.let { gen?.writeNumber(it) }
         }
     }
 }
