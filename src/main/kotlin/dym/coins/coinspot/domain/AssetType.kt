@@ -81,7 +81,7 @@ data class AssetType internal constructor(
 
         @JvmStatic
         @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-        fun of(code: String): AssetType = assetTypes.computeIfAbsent(code.uppercase()) { AssetType(code, code, null) }
+        fun of(code: String) = assetTypes.computeIfAbsent(code.uppercase()) { key -> AssetType(key, key, null) }
     }
 
 }
