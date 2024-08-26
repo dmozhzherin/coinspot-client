@@ -17,7 +17,7 @@ import java.math.BigDecimal
 @JvmRecord
 data class RatesResponse(
     @JsonDeserialize(keyAs = AssetType::class)
-    @JvmField val prices: Map<AssetType, Rate>
+    val prices: Map<AssetType, Rate>
 ) {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
