@@ -35,8 +35,7 @@ abstract class PrivateAPIClient(private val apiKey: String, apiSecret: String) :
     private fun genSign(message: ByteArray): ByteArray =
         Mac.getInstance(HMAC_SHA_512).run {
             init(keySpec)
-            update(message)
-            doFinal()
+            doFinal(message)
         }
 
     private fun <T : HMACRequest> prepareRequest(url: URL, body: T): HttpRequestBuilder {

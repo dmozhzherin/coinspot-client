@@ -46,6 +46,7 @@ data class AssetType internal constructor(
         val BTT = AssetType("BTT", "BitTorrent", "BTTC", false)
         val REV = AssetType("REV", "Revain", "R", false)
         val BCC = AssetType("BCC", "Bitcoin Cash", "BCH", false)
+        val BSV = AssetType("BSV", "Bitcoin Satoshi Vision", "BCHSV", false)
 
         @JvmStatic
         private val assetTypes: ConcurrentMap<String, AssetType> = ConcurrentHashMap(mapOf(
@@ -76,7 +77,10 @@ data class AssetType internal constructor(
             REV.alias!! to REV,
 
             BCC.code to BCC,
-            BCC.alias!! to BCC
+            BCC.alias!! to BCC,
+
+            BSV.code to BSV,
+            BSV.alias!! to BSV,
         ))
 
         @JvmStatic
