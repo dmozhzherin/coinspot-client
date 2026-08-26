@@ -11,7 +11,6 @@ import dym.coins.coinspot.api.resource.BalancesResponse
 import dym.coins.coinspot.api.resource.OrderHistoryResponse
 import dym.coins.coinspot.api.resource.TransfersHistoryResponse
 import dym.coins.coinspot.domain.AssetType
-import java.net.URL
 import java.time.LocalDate
 
 
@@ -32,7 +31,7 @@ class CoinspotROApiClient
         endDate: LocalDate,
         limit: Int? = null
     ): OrderHistory = callApi(
-        URL(apiUrl + ORDER_HISTORY),
+        "$apiUrl$ORDER_HISTORY",
         OrderHistoryRequest(null, null, startDate.toString(), endDate.toString(), limit),
         OrderHistoryResponse::class.java
     ) {
@@ -43,7 +42,7 @@ class CoinspotROApiClient
         startDate: LocalDate,
         endDate: LocalDate
     ): TransfersHistory = callApi(
-        URL(apiUrl + TRANSFER_HISTORY),
+        "$apiUrl$TRANSFER_HISTORY",
         TransfersHistoryRequest(startDate.toString(), endDate.toString()),
         TransfersHistoryResponse::class.java
     ) {
@@ -55,18 +54,27 @@ class CoinspotROApiClient
      * To obtain available balances use [loadBalance]
      */
     suspend fun loadBalances(): Map<AssetType, Balance> =
-        callApi(URL(apiUrl + BALANCES), HMACRequest.noinput(), BalancesResponse::class.java) {
+        callApi(
+            "$apiUrl$BALANCES",
+            HMACRequest.noinput(),
+            BalancesResponse::class.java
+        ) {
             it.balances
         }
 
     suspend fun loadBalance(coin: AssetType): Balance =
-        callApi(URL("$apiUrl$BALANCE/${coin.code}?available=yes"), HMACRequest.noinput(), BalanceResponse::class.java) {
+        callApi(
+            "$apiUrl$BALANCE/${coin.code}?available=yes",
+            HMACRequest.noinput(),
+            BalanceResponse::class.java
+        ) {
             it.balance
         }
 
 
     companion object {
         private const val COINSPOT_RO_API_V_2 = "https://www.coinspot.com.au/api/v2/ro"
+
         private const val ORDER_HISTORY = "/my/orders/completed"
         private const val TRANSFER_HISTORY = "/my/sendreceive"
         private const val BALANCES = "/my/balances"

@@ -3,15 +3,11 @@ package dym.coins.coinspot.client
 import dym.coins.coinspot.api.request.HMACRequest
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.headers
-import io.ktor.client.request.invoke
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.HttpMethod
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import java.net.URL
 import java.util.HexFormat
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
@@ -38,11 +34,9 @@ abstract class PrivateAPIClient(private val apiKey: String, apiSecret: String) :
             doFinal(message)
         }
 
-    private fun <T : HMACRequest> prepareRequest(url: URL, body: T): HttpRequestBuilder {
+    private fun <T : HMACRequest> HttpRequestBuilder.prepareRequest(body: T) {
         val message = objectWriter.writeValueAsBytes(body.nonced())
         val sign = HexFormat.of().formatHex(genSign(message))
-
-        return HttpRequestBuilder(url).apply {
             method = HttpMethod.Post
             setBody(message)
             headers {
@@ -50,7 +44,6 @@ abstract class PrivateAPIClient(private val apiKey: String, apiSecret: String) :
                 append("key", apiKey)
                 append("sign", sign)
             }
-        }
     }
 
     /**
@@ -58,15 +51,14 @@ abstract class PrivateAPIClient(private val apiKey: String, apiSecret: String) :
      * The call is synchronized in an attempt to ensure the correct order of the ever-growing nonce
      */
     protected suspend fun <T : HMACRequest, P, R> callApi(
-        url: URL,
+        uri: String,
         body: T,
         clazz: Class<P>,
         transform: (P) -> R = { it as R }
     ): R = lock.withLock {
-        val request = prepareRequest(url, body)
-        coroutineScope { async { httpClient.post(request) } }
-    }.await().run {
-        processResponse(this, clazz, transform)
+        httpClient.post(uri){ prepareRequest(body) }.run {
+            processResponse(this, clazz, transform)
+        }
     }
 
 }

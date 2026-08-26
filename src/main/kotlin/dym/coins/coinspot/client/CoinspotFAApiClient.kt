@@ -8,7 +8,6 @@ import dym.coins.coinspot.api.resource.SwapNowResponse
 import dym.coins.coinspot.api.resource.SwapQuoteResponse
 import dym.coins.coinspot.domain.AssetType
 import java.math.BigDecimal
-import java.net.URL
 
 
 /**
@@ -25,12 +24,20 @@ class CoinspotFAApiClient
 
 
     suspend fun swapQuote(from: AssetType, to: AssetType, amount: BigDecimal): BigDecimal =
-        callApi(URL("$apiUrl$SWAP_NOW_QUOTE"), SwapQuoteRequest(from, to, amount), SwapQuoteResponse::class.java) {
+        callApi(
+            "$apiUrl$SWAP_NOW_QUOTE",
+            SwapQuoteRequest(from, to, amount),
+            SwapQuoteResponse::class.java
+        ) {
             it.rate
         }
 
     suspend fun sellQuote(from: AssetType, amount: BigDecimal): BigDecimal =
-        callApi(URL("$apiUrl$SELL_NOW_QUOTE"), SellQuoteRequest(from, amount), SwapQuoteResponse::class.java) {
+        callApi(
+            "$apiUrl$SELL_NOW_QUOTE",
+            SellQuoteRequest(from, amount),
+            SwapQuoteResponse::class.java
+        ) {
             it.rate
         }
 
@@ -42,8 +49,9 @@ class CoinspotFAApiClient
         treshold: BigDecimal?
     ): SwapResult =
         callApi(
-            URL("$apiUrl$SWAP_NOW"),
-            SwapNowRequest(from, to, amount, rate, treshold), SwapNowResponse::class.java
+            "$apiUrl$SWAP_NOW",
+            SwapNowRequest(from, to, amount, rate, treshold),
+            SwapNowResponse::class.java
         ) { result ->
             val assetTo = result.market.split("/").let { market ->
                 AssetType.of(market[0]).takeIf { it != result.coin } ?: AssetType.of(market[1])

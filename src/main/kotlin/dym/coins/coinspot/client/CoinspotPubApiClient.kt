@@ -5,7 +5,6 @@ import dym.coins.coinspot.api.resource.RatesResponse
 import dym.coins.coinspot.domain.AssetType
 import io.ktor.client.request.get
 import java.math.BigDecimal
-import java.net.URL
 
 /**
  * @author dym
@@ -20,17 +19,17 @@ class CoinspotPubApiClient @JvmOverloads constructor(private val apiUrl: String 
      * @throws {@link dym.coins.coinspot.exception.CoinspotException} if the API returns an error.
      */
     suspend fun latestRates(): Map<AssetType, RatesResponse.Rate> =
-        httpClient.get(URL(apiUrl + LATEST_RATES)).run {
+        httpClient.get("$apiUrl$LATEST_RATES").run {
             processResponse(this, RatesResponse::class.java) { it.prices }
         }
 
     suspend fun buyPrice(assetType: AssetType): BigDecimal =
-        httpClient.get(apiUrl + LATEST_BUY + assetType.code).run {
+        httpClient.get("$apiUrl$LATEST_BUY${assetType.code}").run {
             processResponse(this, RateResponse::class.java) { it.rate }
         }
 
     suspend fun sellPrice(assetType: AssetType): BigDecimal =
-        httpClient.get(apiUrl + LATEST_SELL + assetType.code).run {
+        httpClient.get("$apiUrl$LATEST_SELL${assetType.code}").run {
             processResponse(this, RateResponse::class.java) { it.rate }
         }
 
@@ -38,6 +37,7 @@ class CoinspotPubApiClient @JvmOverloads constructor(private val apiUrl: String 
     companion object {
         private const val COINSPOT_PUBAPI_V_2 = "https://www.coinspot.com.au/pubapi/v2"
 
+        private const val STATUS = "/status"
         private const val LATEST_RATES = "/latest"
         private const val LATEST_BUY = "/buyprice/"
         private const val LATEST_SELL = "/sellprice/"
